@@ -23,6 +23,8 @@ export default function Signup() {
   useEffect(() => {
     setLoader(loading)
     if (userInfo) {
+      reset()
+      clearErrors()
       toast({ title: userInfo.message, status: "success", duration: 5000, isClosable: true, position: "bottom" })
       navigate("/chats")
     }
@@ -30,7 +32,7 @@ export default function Signup() {
     if (error) {
       toast({ title: error.message, status: "error", duration: 5000, isClosable: true, position: "bottom" })
     }
-  }, [error, loading, navigate, toast, userInfo])
+  }, [clearErrors, error, loading, navigate, reset, toast, userInfo])
 
 
   const dispatch = useDispatch()
@@ -94,8 +96,6 @@ export default function Signup() {
       data["picture"] = UploadUrl
     }
     dispatch(RegistractionAction(data))
-    reset()
-    clearErrors()
   }
 
   return (
