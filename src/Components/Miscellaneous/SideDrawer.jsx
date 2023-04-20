@@ -12,9 +12,9 @@ import { LogoutAction } from '../../Redux/Action/UserAction'
 export default function SideDrawer() {
 
     const [Search, setSearch] = useState("")
-    const [SearchResult, setSearchResult] = useState([])
-    const [Loading, setLoading] = useState(false)
-    const [LoadingChat, setLoadingChat] = useState()
+    // const [SearchResult, setSearchResult] = useState([])
+    // const [Loading, setLoading] = useState(false)
+    // const [LoadingChat, setLoadingChat] = useState()
 
     const { user } = ChatState()
     const nevigate = useNavigate()
@@ -34,7 +34,7 @@ export default function SideDrawer() {
             return
         }
 
-        
+
     }
 
     return (
