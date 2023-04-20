@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { BellIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import { Avatar, Box, Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, Tooltip, useDisclosure, useToast } from '@chakra-ui/react'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -6,15 +6,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ChatState } from '../../Context/ChatProvider'
 import ProfileModel from './ProfileModel'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { LogoutAction } from '../../Redux/Action/UserAction'
+import { GetUserBySearchAction } from '../../Redux/Action/ChatAction'
 
 export default function SideDrawer() {
 
     const [Search, setSearch] = useState("")
-    // const [SearchResult, setSearchResult] = useState([])
-    // const [Loading, setLoading] = useState(false)
-    // const [LoadingChat, setLoadingChat] = useState()
+    const [SearchResult, setSearchResult] = useState([])
+    const [Loading, setLoading] = useState(false)
+    const [LoadingChat, setLoadingChat] = useState()
 
     const { user } = ChatState()
     const nevigate = useNavigate()
@@ -22,6 +23,19 @@ export default function SideDrawer() {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = useRef()
     const toast = useToast()
+
+    const { loading, users, error } = useSelector((state) => state.getUserBySearch)
+
+    useEffect(() => {
+        setLoading(loading)
+        if (users) {
+            setSearchResult(users)
+        }
+        if (error) {
+            toast({ title: "Error occured!", description: "Failed to load the search results", status: "error", duration: 5000, isClosable: true, position: "bottom-left" })
+        }
+    }, [SearchResult, error, loading, toast, users])
+
 
     const loagoutHandlar = () => {
         dispatch(LogoutAction())
@@ -33,8 +47,7 @@ export default function SideDrawer() {
             toast({ title: "Please enter something in search", status: "warning", duration: 5000, isClosable: true, position: "top-left" })
             return
         }
-
-
+        dispatch(GetUserBySearchAction(Search))
     }
 
     return (
