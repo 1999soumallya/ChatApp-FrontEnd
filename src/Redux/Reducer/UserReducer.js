@@ -1,4 +1,4 @@
-import { USER_LOGIN_FAILED, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_REGISTER_FAILED, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from "../Constants/AuthConstants";
+import { USER_LOGIN_FAILED, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAILED, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from "../Constants/AuthConstants";
 
 export const RegistractionReducer = (state = {}, action) => {
     switch (action.type) {
@@ -26,6 +26,9 @@ export const LoginReducer = (state = { userInfo: {} }, action) => {
 
         case USER_LOGIN_FAILED:
             return { loading: false, error: action.payload }
+
+        case USER_LOGOUT:
+            return { loading: false }
 
         default:
             return state;

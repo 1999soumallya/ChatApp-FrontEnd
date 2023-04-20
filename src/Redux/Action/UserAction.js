@@ -1,5 +1,5 @@
 import axios from "axios"
-import { USER_LOGIN_FAILED, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_REGISTER_FAILED, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, config } from "../Constants/AuthConstants"
+import { USER_LOGIN_FAILED, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAILED, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, config } from "../Constants/AuthConstants"
 import { Encrypt } from "../../SequrityFunction"
 
 export const RegistractionAction = (details) => async (dispatch) => {
@@ -29,6 +29,15 @@ export const LoginAction = (details) => async (dispatch) => {
         }).catch((error) => {
             dispatch({ type: USER_LOGIN_FAILED, payload: error.response.data })
         })
+    } catch (error) {
+        dispatch({ type: USER_LOGIN_FAILED, payload: error.response && error.response.data })
+    }
+}
+
+export const LogoutAction = () => async (dispatch) => {
+    try {
+        dispatch({ type: USER_LOGOUT })
+        localStorage.clear()
     } catch (error) {
         dispatch({ type: USER_LOGIN_FAILED, payload: error.response && error.response.data })
     }
