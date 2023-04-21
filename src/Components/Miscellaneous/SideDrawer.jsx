@@ -17,7 +17,7 @@ export default function SideDrawer() {
     const [Search, setSearch] = useState("")
     const [SearchResult, setSearchResult] = useState([])
     const [Loading, setLoading] = useState(false)
-    const [LoadingChat, setLoadingChat] = useState()
+    // const [LoadingChat, setLoadingChat] = useState()
 
     const { user } = ChatState()
     const nevigate = useNavigate()
