@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { LogoutAction } from '../../Redux/Action/UserAction'
 import { GetUserBySearchAction } from '../../Redux/Action/ChatAction'
+import ChatLoading from '../Chat/ChatLoading'
+import UserListItem from '../Chat/UserListItem'
 
 export default function SideDrawer() {
 
@@ -32,7 +34,7 @@ export default function SideDrawer() {
             setSearchResult(users)
         }
         if (error) {
-            toast({ title: "Error occured!", description: "Failed to load the search results", status: "error", duration: 5000, isClosable: true, position: "bottom-left" })
+            toast({ title: "Error occured!", description: error.message, status: "error", duration: 5000, isClosable: true, position: "bottom-left" })
         }
     }, [SearchResult, error, loading, toast, users])
 
@@ -48,6 +50,10 @@ export default function SideDrawer() {
             return
         }
         dispatch(GetUserBySearchAction(Search))
+    }
+
+    const accessChat = (userId) => {
+        
     }
 
     return (
@@ -84,7 +90,7 @@ export default function SideDrawer() {
                 </div>
             </Box>
 
-            <Drawer isOpen={isOpen} placement='left' onClose={onClose} finalFocusRef={btnRef}>
+            <Drawer isOpen={isOpen} placement='left' onClose={onClose} finalFocusRef={btnRef} closeOnOverlayClick={false} closeOnEsc={false}>
                 <DrawerOverlay />
                 <DrawerContent>
                     <DrawerCloseButton />
@@ -94,6 +100,15 @@ export default function SideDrawer() {
                             <Input placeholder='Search by name or email' mr={2} value={Search} onChange={(e) => setSearch(e.target.value)} />
                             <Button variant={"solid"} colorScheme="blue" onClick={handleSearch} > Go </Button>
                         </Box>
+                        {
+                            Loading ? (
+                                <ChatLoading />
+                            ) : (
+                                SearchResult?.map((users) => (
+                                    <UserListItem key={users._id} user={users} handleFunction={() => accessChat(users._id)} />
+                                ))
+                            )
+                        }
                     </DrawerBody>
                 </DrawerContent>
             </Drawer>
