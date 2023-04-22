@@ -8,7 +8,7 @@ export const GetUserBySearchAction = (search) => async (dispatch) => {
         dispatch({ type: GET_USER_BY_SEARCH_REQUEST })
         await axios.get(`${process.env.REACT_APP_API_URL}/api/user?search=${search}`, config).then(({ data }) => {
             if (data) {
-                dispatch({ type: GET_USER_BY_SEARCH_SUCCESS, payload: data.users })
+                dispatch({ type: GET_USER_BY_SEARCH_SUCCESS, payload: data })
             }
         }).catch((error) => {
             dispatch({ type: GET_USER_BY_SEARCH_FAILS, payload: error.response.data })

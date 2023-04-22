@@ -3,7 +3,7 @@ import { CLEAR_USER_SEARCH_RESULT, GET_USER_BY_SEARCH_FAILS, GET_USER_BY_SEARCH_
 export const GetUserBySearchReducer = (state = { users: [] }, action) => {
     switch (action.type) {
         case GET_USER_BY_SEARCH_REQUEST:
-            return { loading: true, ...state }
+            return { loading: true, users: [] }
 
         case GET_USER_BY_SEARCH_SUCCESS:
             return { loading: false, users: action.payload }

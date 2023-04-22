@@ -31,7 +31,11 @@ export default function SideDrawer() {
     useEffect(() => {
         setLoading(loading)
         if (users) {
-            setSearchResult(users)
+            if (users.users?.length > 0) {
+                setSearchResult(users.users)
+            } else {
+                setSearchResult(users.message)
+            }
         }
         if (error) {
             toast({ title: "Error occured!", description: error.message, status: "error", duration: 5000, isClosable: true, position: "bottom-left" })
@@ -46,7 +50,6 @@ export default function SideDrawer() {
 
     const handleSearch = () => {
         setSearchResult([])
-        dispatch(ClearUserSearchAction())
         if (Search === "") {
             toast({ title: "Please enter something in search", status: "warning", duration: 5000, isClosable: true, position: "top-left" })
             return
@@ -55,7 +58,7 @@ export default function SideDrawer() {
     }
 
     const accessChat = (userId) => {
-        
+
     }
 
     const handleClose = () => {
@@ -111,11 +114,11 @@ export default function SideDrawer() {
                         {
                             Loading ? (
                                 <ChatLoading />
-                            ) : (
+                            ) : (Array.isArray(SearchResult) === true) ? (
                                 SearchResult?.map((users) => (
                                     <UserListItem key={users._id} user={users} handleFunction={() => accessChat(users._id)} />
                                 ))
-                            )
+                                ) : (<Text color={"red"} colorScheme="red" fontSize={"14px"} fontWeight={"medium"} fontFamily={"Work sans"}>{ SearchResult }</Text>)
                         }
                     </DrawerBody>
                 </DrawerContent>
