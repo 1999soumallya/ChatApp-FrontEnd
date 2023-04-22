@@ -8,7 +8,7 @@ import ProfileModel from './ProfileModel'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { LogoutAction } from '../../Redux/Action/UserAction'
-import { GetUserBySearchAction } from '../../Redux/Action/ChatAction'
+import { ClearUserSearchAction, GetUserBySearchAction } from '../../Redux/Action/ChatAction'
 import ChatLoading from '../Chat/ChatLoading'
 import UserListItem from '../Chat/UserListItem'
 
@@ -45,6 +45,8 @@ export default function SideDrawer() {
     }
 
     const handleSearch = () => {
+        setSearchResult([])
+        dispatch(ClearUserSearchAction())
         if (Search === "") {
             toast({ title: "Please enter something in search", status: "warning", duration: 5000, isClosable: true, position: "top-left" })
             return
@@ -54,6 +56,12 @@ export default function SideDrawer() {
 
     const accessChat = (userId) => {
         
+    }
+
+    const handleClose = () => {
+        setSearch("")
+        dispatch(ClearUserSearchAction())
+        setSearchResult([])
     }
 
     return (
@@ -93,7 +101,7 @@ export default function SideDrawer() {
             <Drawer isOpen={isOpen} placement='left' onClose={onClose} finalFocusRef={btnRef} closeOnOverlayClick={false} closeOnEsc={false}>
                 <DrawerOverlay />
                 <DrawerContent>
-                    <DrawerCloseButton />
+                    <DrawerCloseButton onClick={handleClose} />
                     <DrawerHeader borderBottomWidth={"1px"}> Search Users </DrawerHeader>
                     <DrawerBody>
                         <Box display={"flex"} pb={2}>

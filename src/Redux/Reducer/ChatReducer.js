@@ -1,4 +1,4 @@
-import { GET_USER_BY_SEARCH_FAILS, GET_USER_BY_SEARCH_REQUEST, GET_USER_BY_SEARCH_SUCCESS } from "../Constants/ChatConstants";
+import { CLEAR_USER_SEARCH_RESULT, GET_USER_BY_SEARCH_FAILS, GET_USER_BY_SEARCH_REQUEST, GET_USER_BY_SEARCH_SUCCESS } from "../Constants/ChatConstants";
 
 export const GetUserBySearchReducer = (state = { users: [] }, action) => {
     switch (action.type) {
@@ -10,6 +10,9 @@ export const GetUserBySearchReducer = (state = { users: [] }, action) => {
 
         case GET_USER_BY_SEARCH_FAILS:
             return { loading: false, error: action.payload }
+
+        case CLEAR_USER_SEARCH_RESULT:
+            return { users: [] }
 
         default:
             return state;
