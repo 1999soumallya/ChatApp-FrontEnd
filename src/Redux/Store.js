@@ -2,14 +2,15 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from "redux-thunk"
 import { composeWithDevTools } from "redux-devtools-extension"
 import { LoginReducer, RegistractionReducer } from './Reducer/UserReducer'
-import { GetUserBySearchReducer } from './Reducer/ChatReducer'
+import { AccessChatByIdReducer, GetUserBySearchReducer } from './Reducer/ChatReducer'
 
 const UserInfoFromStorage = localStorage.getItem("userInfo") ? localStorage.getItem("userInfo") : null
 
 const reducer = combineReducers({
     registerDetails: RegistractionReducer,
     loginDetails: LoginReducer,
-    getUserBySearch: GetUserBySearchReducer
+    getUserBySearch: GetUserBySearchReducer,
+    accessChatById: AccessChatByIdReducer
 })
 
 const initialState = {
