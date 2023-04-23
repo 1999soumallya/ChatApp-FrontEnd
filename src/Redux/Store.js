@@ -5,6 +5,8 @@ import { LoginReducer, RegistractionReducer } from './Reducer/UserReducer'
 import { AccessChatByIdReducer, GetUserBySearchReducer } from './Reducer/ChatReducer'
 
 const UserInfoFromStorage = localStorage.getItem("userInfo") ? localStorage.getItem("userInfo") : null
+const UserTokenFromStorage = localStorage.getItem("Authtoken") ? localStorage.getItem("Authtoken") : null
+
 
 const reducer = combineReducers({
     registerDetails: RegistractionReducer,
@@ -14,7 +16,7 @@ const reducer = combineReducers({
 })
 
 const initialState = {
-    loginDetails: { userInfo: UserInfoFromStorage }
+    loginDetails: { userInfo: { details: UserInfoFromStorage, token: UserTokenFromStorage } }
 }
 
 const middleware = [thunk]
