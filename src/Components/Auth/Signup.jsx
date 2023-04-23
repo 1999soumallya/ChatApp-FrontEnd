@@ -26,7 +26,8 @@ export default function Signup() {
       reset()
       clearErrors()
       toast({ title: userInfo.message, status: "success", duration: 5000, isClosable: true, position: "bottom" })
-      navigate("/chats")
+      window.location.href = "/chats"
+      // navigate("/chats")
     }
 
     if (error) {

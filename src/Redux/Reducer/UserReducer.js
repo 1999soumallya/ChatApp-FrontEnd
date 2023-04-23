@@ -10,6 +10,9 @@ export const RegistractionReducer = (state = {}, action) => {
 
         case USER_REGISTER_FAILED:
             return { loading: false, error: action.payload }
+        
+        case USER_LOGOUT:
+            return {}
 
         default:
             return state;
