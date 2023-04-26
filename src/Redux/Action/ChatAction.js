@@ -2,7 +2,7 @@ import axios from "axios"
 import { ACCESS_CHAT_BY_ID_FAILED, ACCESS_CHAT_BY_ID_REQUEST, ACCESS_CHAT_BY_ID_SUCCESS, CLEAR_USER_SEARCH_RESULT, GET_USER_BY_SEARCH_FAILS, GET_USER_BY_SEARCH_REQUEST, GET_USER_BY_SEARCH_SUCCESS } from "../Constants/ChatConstants"
 
 function config(token) {
-    return { headers: { Authorization: `Bearer ${token}` } }
+    return { headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` } }
 }
 
 export const GetUserBySearchAction = (search) => async (dispatch, getState) => {

@@ -8,7 +8,7 @@ import ProfileModel from './ProfileModel'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { LogoutAction } from '../../Redux/Action/UserAction'
-import { ClearUserSearchAction, GetUserBySearchAction } from '../../Redux/Action/ChatAction'
+import { AccessChatByIdAction, ClearUserSearchAction, GetUserBySearchAction } from '../../Redux/Action/ChatAction'
 import ChatLoading from '../Chat/ChatLoading'
 import UserListItem from '../Chat/UserListItem'
 
@@ -17,9 +17,9 @@ export default function SideDrawer() {
     const [Search, setSearch] = useState("")
     const [SearchResult, setSearchResult] = useState([])
     const [Loading, setLoading] = useState(false)
-    // const [LoadingChat, setLoadingChat] = useState()
+    const [LoadingChat, setLoadingChat] = useState()
 
-    const { user } = ChatState()
+    const { user, setSelectChat } = ChatState()
     const nevigate = useNavigate()
     const dispatch = useDispatch()
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -27,6 +27,7 @@ export default function SideDrawer() {
     const toast = useToast()
 
     const { loading, users, error } = useSelector((state) => state.getUserBySearch)
+    const { AccessChatloading, chats, AccessChaterror } = useSelector((state) => state.accessChatById)
 
     useEffect(() => {
         setLoading(loading)
@@ -41,6 +42,17 @@ export default function SideDrawer() {
             toast({ title: "Error occured!", description: error.message, status: "error", duration: 5000, isClosable: true, position: "bottom-left" })
         }
     }, [SearchResult, error, loading, toast, users])
+
+    useEffect(() => {
+        setLoadingChat(AccessChatloading)
+        if (chats) {
+            setSelectChat(chats)
+        }
+        if (AccessChaterror) {
+            toast({ title: "Error occured!", description: AccessChaterror.message, status: "error", duration: 5000, isClosable: true, position: "bottom-left" })
+        }
+    }, [AccessChaterror, AccessChatloading, chats, setSelectChat, toast])
+    
 
 
     const loagoutHandlar = () => {
@@ -58,7 +70,7 @@ export default function SideDrawer() {
     }
 
     const accessChat = (userId) => {
-
+        dispatch(AccessChatByIdAction(userId))
     }
 
     const handleClose = () => {
