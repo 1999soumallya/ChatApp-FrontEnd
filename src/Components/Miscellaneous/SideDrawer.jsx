@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { BellIcon, ChevronDownIcon } from '@chakra-ui/icons'
-import { Avatar, Box, Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, Tooltip, useDisclosure, useToast } from '@chakra-ui/react'
+import { Avatar, Box, Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Spinner, Text, Tooltip, useDisclosure, useToast } from '@chakra-ui/react'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ChatState } from '../../Context/ChatProvider'
@@ -19,7 +19,7 @@ export default function SideDrawer() {
     const [Loading, setLoading] = useState(false)
     const [LoadingChat, setLoadingChat] = useState()
 
-    const { user, setSelectChat } = ChatState()
+    const { user, setSelectChat, chats, setChats } = ChatState()
     const nevigate = useNavigate()
     const dispatch = useDispatch()
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -27,7 +27,7 @@ export default function SideDrawer() {
     const toast = useToast()
 
     const { loading, users, error } = useSelector((state) => state.getUserBySearch)
-    const { AccessChatloading, chats, AccessChaterror } = useSelector((state) => state.accessChatById)
+    const { AccessChatloading, Accesschats, AccessChaterror } = useSelector((state) => state.accessChatById)
 
     useEffect(() => {
         setLoading(loading)
@@ -42,18 +42,6 @@ export default function SideDrawer() {
             toast({ title: "Error occured!", description: error.message, status: "error", duration: 5000, isClosable: true, position: "bottom-left" })
         }
     }, [SearchResult, error, loading, toast, users])
-
-    useEffect(() => {
-        setLoadingChat(AccessChatloading)
-        if (chats) {
-            setSelectChat(chats)
-        }
-        if (AccessChaterror) {
-            toast({ title: "Error occured!", description: AccessChaterror.message, status: "error", duration: 5000, isClosable: true, position: "bottom-left" })
-        }
-    }, [AccessChaterror, AccessChatloading, chats, setSelectChat, toast])
-    
-
 
     const loagoutHandlar = () => {
         dispatch(LogoutAction())
@@ -73,11 +61,24 @@ export default function SideDrawer() {
         dispatch(AccessChatByIdAction(userId))
     }
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setSearch("")
         dispatch(ClearUserSearchAction())
         setSearchResult([])
-    }
+    }, [dispatch])
+
+    useEffect(() => {
+        setLoadingChat(AccessChatloading)
+        if (Accesschats) {
+            if (!chats.find((items) => items._id === Accesschats._id)) setChats([Accesschats, ...chats])
+            setSelectChat(Accesschats)
+            onClose()
+            handleClose()
+        }
+        if (AccessChaterror) {
+            toast({ title: "Error occured!", description: AccessChaterror.message, status: "error", duration: 5000, isClosable: true, position: "bottom-left" })
+        }
+    }, [AccessChaterror, AccessChatloading, Accesschats, chats, handleClose, onClose, setChats, setSelectChat, toast])
 
     return (
         <>
@@ -130,8 +131,9 @@ export default function SideDrawer() {
                                 SearchResult?.map((users) => (
                                     <UserListItem key={users._id} user={users} handleFunction={() => accessChat(users._id)} />
                                 ))
-                                ) : (<Text color={"red"} colorScheme="red" fontSize={"14px"} fontWeight={"medium"} fontFamily={"Work sans"}>{ SearchResult }</Text>)
+                            ) : (<Text color={"red"} colorScheme="red" fontSize={"14px"} fontWeight={"medium"} fontFamily={"Work sans"}>{SearchResult}</Text>)
                         }
+                        {LoadingChat && <Spinner ml={"auto"} display={"flex"} />}
                     </DrawerBody>
                 </DrawerContent>
             </Drawer>
