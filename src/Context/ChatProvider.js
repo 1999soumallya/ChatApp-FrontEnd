@@ -8,7 +8,7 @@ const ChatProvider = ({ children }) => {
 
     const [user, setUser] = useState()
     const [SelectChat, setSelectChat] = useState()
-    const [chats, setChats] = useState()
+    const [chats, setChats] = useState([])
 
     const navigate = useNavigate()
 
