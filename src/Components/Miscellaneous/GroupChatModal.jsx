@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, useToast } from '@chakra-ui/react'
+import { Box, Button, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import { GetUserBySearchAction } from '../../Redux/Action/ChatAction'
+import UserListItem from '../Chat/UserListItem'
+import UserBadgeItem from '../Chat/UserBadgeItem'
 
 export default function GroupChatModal({ children }) {
 
-    const [GroupDetails, setGroupDetails] = useState({ groupName: "", groupUsers: [] })
-    const [Search, setSearch] = useState("")
+    const [GroupName, setGroupName] = useState("")
+    const [GroupUsers, setGroupUsers] = useState([])
     const [SearchResult, setSearchResult] = useState([])
     const [Loading, setLoading] = useState(false)
 
@@ -31,13 +33,27 @@ export default function GroupChatModal({ children }) {
         }
     }, [SearchResult, error, loading, toast, users])
 
-    const handleSearch = () => {
-        setSearchResult([])
-        if (Search === "") {
-            toast({ title: "Please enter something in search", status: "warning", duration: 5000, isClosable: true, position: "top-left" })
+    const handleSearch = (search) => {
+        if (!search) {
             return
         }
-        dispatch(GetUserBySearchAction(Search))
+        dispatch(GetUserBySearchAction(search))
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+    }
+
+    const handleAddUserInGroup = (users) => {
+        if (GroupUsers.includes(users)) {
+            toast({ title: "User already added", status: "success", duration: 5000, isClosable: true, position: "top" })
+            return
+        }
+        setGroupUsers([...GroupUsers, users])
+    }
+
+    const handleDelete = (user) => {
+        setGroupUsers(GroupUsers.filter((e) => e._id !== user._id))
     }
 
 
@@ -49,17 +65,35 @@ export default function GroupChatModal({ children }) {
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Modal Title</ModalHeader>
+                    <ModalHeader fontSize={"35px"} fontFamily={"Work sans"} display={"flex"} justifyContent={"center"}>Create Group Chat</ModalHeader>
                     <ModalCloseButton />
-                    <ModalBody>
-                        {/* <Lorem count={2} /> */}
+                    <ModalBody display={"flex"} alignItems={"center"} flexDir={"column"}>
+                        <FormControl>
+                            <Input placeholder="Chat Name" name='groupName' mb={3} value={GroupName} onChange={(e) => setGroupName(e.target.value)} />
+                        </FormControl>
+                        <FormControl>
+                            <Input placeholder="Add Users eg: John, Piyush, Jane" name='groupUsers' mb={1} onChange={(e) => handleSearch(e.target.value)} />
+                        </FormControl>
+                        {/* selected users */}
+                        <Box w={"100%"} display={"flex"} flexWrap={"wrap"} alignItems={"center"}>
+                            {
+                                GroupUsers.length > 0 && GroupUsers.map((users) => (
+                                    <UserBadgeItem key={users._id} users={users} handleFunction={() => handleDelete(users)} />
+                                ))
+                            }
+                        </Box>
+                        {/* Rander searched users */}
+                        {
+                            Loading ? (<>Loading</>) : (Array.isArray(SearchResult) === true) ? SearchResult?.slice(0, 4).map((items) => (
+                                <UserListItem user={items} key={items._id} handleFunction={() => handleAddUserInGroup(items)} />
+                            )) : (<Text color={"red"} colorScheme="red" fontSize={"14px"} fontWeight={"medium"} fontFamily={"Work sans"}>{SearchResult}</Text>)
+                        }
                     </ModalBody>
 
                     <ModalFooter>
-                        <Button colorScheme='blue' mr={3} onClick={onClose}>
-                            Close
+                        <Button colorScheme='blue' onClick={handleSubmit}>
+                            Create Chat
                         </Button>
-                        <Button variant='ghost'>Secondary Action</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
