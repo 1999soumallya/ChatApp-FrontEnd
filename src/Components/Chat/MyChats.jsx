@@ -8,7 +8,7 @@ import ChatLoading from './ChatLoading'
 import { getSender } from '../../Config/ChatLogics'
 import GroupChatModal from '../Miscellaneous/GroupChatModal'
 
-export default function MyChats({ fetchAgain }) {
+export default function MyChats() {
     const { user, SelectChat, setSelectChat, chats, setChats } = ChatState()
 
     const toast = useToast()
@@ -18,7 +18,7 @@ export default function MyChats({ fetchAgain }) {
 
     useEffect(() => {
         dispatch(FetchChatsAction())
-    }, [dispatch, fetchAgain])
+    }, [dispatch])
 
 
     useEffect(() => {
