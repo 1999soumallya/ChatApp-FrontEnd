@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Button, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure, useToast } from '@chakra-ui/react'
-import { GetUserBySearchAction } from '../../Redux/Action/ChatAction'
+import { CreateGroupAction, GetUserBySearchAction } from '../../Redux/Action/ChatAction'
 import UserListItem from '../Chat/UserListItem'
 import UserBadgeItem from '../Chat/UserBadgeItem'
+import { ChatState } from '../../Context/ChatProvider'
 
 export default function GroupChatModal({ children }) {
 
@@ -16,8 +17,10 @@ export default function GroupChatModal({ children }) {
     const dispatch = useDispatch()
 
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const { chats, setChats } = ChatState()
 
     const { loading, users, error } = useSelector((state) => state.getUserBySearch)
+    const { CreateGroup, CreateGroupError } = useSelector((state) => state.createGroup)
 
     useEffect(() => {
         setLoading(loading)
@@ -33,6 +36,20 @@ export default function GroupChatModal({ children }) {
         }
     }, [SearchResult, error, loading, toast, users])
 
+    useEffect(() => {
+        if (CreateGroup) {
+            setChats([...CreateGroup, ...chats])
+            onClose()
+            toast({ title: "New Group Chat Created!", status: "success", duration: 5000, isClosable: true, position: "bottom-left" })
+        }
+
+        if (CreateGroupError) {
+            toast({ title: "Failed to create the chat!", description: CreateGroupError.message, status: "error", duration: 5000, isClosable: true, position: "top-right" })
+        }
+
+    }, [CreateGroup, CreateGroupError, toast])
+
+
     const handleSearch = (search) => {
         if (!search) {
             return
@@ -42,6 +59,11 @@ export default function GroupChatModal({ children }) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        if (GroupName === "" || GroupUsers.length === 0) {
+            toast({ title: "Please fill all the feilds", status: "warning", duration: 5000, isClosable: true, position: "top-right" })
+            return
+        }
+        dispatch(CreateGroupAction(GroupName, GroupUsers))
     }
 
     const handleAddUserInGroup = (users) => {
