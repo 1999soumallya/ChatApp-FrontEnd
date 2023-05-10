@@ -1,4 +1,4 @@
-import { ACCESS_CHAT_BY_ID_FAILED, ACCESS_CHAT_BY_ID_REQUEST, ACCESS_CHAT_BY_ID_SUCCESS, CLEAR_USER_SEARCH_RESULT, CREATE_GROUP_CHAT_FAILED, CREATE_GROUP_CHAT_REQUEST, CREATE_GROUP_CHAT_SUCCESS, FETCH_CHAT_FAILD, FETCH_CHAT_REQUEST, FETCH_CHAT_SUCCESS, GET_USER_BY_SEARCH_FAILS, GET_USER_BY_SEARCH_REQUEST, GET_USER_BY_SEARCH_SUCCESS, UPDATE_GROUP_NAME_FAILED, UPDATE_GROUP_NAME_REQUEST, UPDATE_GROUP_NAME_SUCCESS, REMOVE_GROUP_USER_FAILED, REMOVE_GROUP_USER_REQUEST, REMOVE_GROUP_USER_SUCCESS } from "../Constants/ChatConstants";
+import { ACCESS_CHAT_BY_ID_FAILED, ACCESS_CHAT_BY_ID_REQUEST, ACCESS_CHAT_BY_ID_SUCCESS, CLEAR_USER_SEARCH_RESULT, CREATE_GROUP_CHAT_FAILED, CREATE_GROUP_CHAT_REQUEST, CREATE_GROUP_CHAT_SUCCESS, FETCH_CHAT_FAILD, FETCH_CHAT_REQUEST, FETCH_CHAT_SUCCESS, GET_USER_BY_SEARCH_FAILS, GET_USER_BY_SEARCH_REQUEST, GET_USER_BY_SEARCH_SUCCESS, UPDATE_GROUP_NAME_FAILED, UPDATE_GROUP_NAME_REQUEST, UPDATE_GROUP_NAME_SUCCESS, REMOVE_GROUP_USER_FAILED, REMOVE_GROUP_USER_REQUEST, REMOVE_GROUP_USER_SUCCESS, ADD_USER_GROUP_REQUEST, ADD_USER_GROUP_SUCCESS, ADD_USER_GROUP_FAILED } from "../Constants/ChatConstants";
 
 export const GetUserBySearchReducer = (state = { users: [] }, action) => {
     switch (action.type) {
@@ -93,6 +93,22 @@ export const RemoveGroupUserReducer = (state = {}, action) => {
 
         case REMOVE_GROUP_USER_FAILED:
             return { GroupUserUpdateloading: false, GroupUserUpdateError: action.payload }
+
+        default:
+            return state;
+    }
+}
+
+export const AddUserGroupReducer = (state = {}, action) => {
+    switch (action.type) {
+        case ADD_USER_GROUP_REQUEST:
+            return { AddUserLoading: true };
+
+        case ADD_USER_GROUP_SUCCESS:
+            return { AddUserLoading: false, AddUser: action.payload }
+
+        case ADD_USER_GROUP_FAILED:
+            return { AddUserLoading: false, AddUserError: action.payload }
 
         default:
             return state;
