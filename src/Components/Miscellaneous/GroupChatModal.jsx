@@ -68,7 +68,7 @@ export default function GroupChatModal({ children }) {
 
     const handleAddUserInGroup = (users) => {
         if (GroupUsers.includes(users)) {
-            toast({ title: "User already added", status: "success", duration: 5000, isClosable: true, position: "top" })
+            toast({ title: "User already added", status: "warning", duration: 5000, isClosable: true, position: "top" })
             return
         }
         setGroupUsers([...GroupUsers, users])
