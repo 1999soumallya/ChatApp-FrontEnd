@@ -117,7 +117,7 @@ export default function UpdateGroupChatModal() {
 
     return (
         <>
-            <IconButton display={"flex"} icon={<ViewIcon />} onClick={onOpen} />
+            <IconButton display={"flex"} icon={<ViewIcon />} onClick={onOpen} isRound />
 
             <Modal isOpen={isOpen} onClose={onClose} isCentered>
                 <ModalOverlay />

@@ -11,7 +11,7 @@ export default function ProfileModel({ user, children }) {
         <>
             {
                 children ? (<span onClick={onOpen}>{children}</span>) : (
-                    <IconButton icon={<ViewIcon />} display={{ base: "flex" }} onClick={onOpen} />
+                    <IconButton icon={<ViewIcon />} display={{ base: "flex" }} onClick={onOpen} isRound />
                 )
             }
 
