@@ -87,6 +87,10 @@ export default function UpdateGroupChatModal() {
         if (user.id === users._id) {
             return
         }
+        if (SelectChat.groupAdmin._id !== user.id) {
+            toast({ title: "Only admin can add someone!", status: "error", duration: 5000, isClosable: true, position: "bottom" })
+            return
+        }
         dispatch(RemoveGroupUserAction(SelectChat._id, users._id))
     }
 
@@ -112,6 +116,10 @@ export default function UpdateGroupChatModal() {
     const handleSubmit = () => {
         if (GroupName === "" || GroupUsers.length === 0) {
             toast({ title: "Please fill all the feilds", status: "warning", duration: 5000, isClosable: true, position: "top-right" })
+            return
+        }
+        if (SelectChat.groupAdmin._id !== user.id) {
+            toast({ title: "Only admin can add someone!", status: "error", duration: 5000, isClosable: true, position: "bottom" })
             return
         }
         dispatch(AddUserGroupAction(SelectChat._id, GroupUsers))
