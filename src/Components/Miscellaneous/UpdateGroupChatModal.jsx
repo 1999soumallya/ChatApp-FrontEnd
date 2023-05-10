@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { GetUserBySearchAction, RemoveGroupUserAction, RenameGroupAction } from '../../Redux/Action/ChatAction'
 import UserListItem from '../Chat/UserListItem'
 
-export default function UpdateGroupChatModal({ fetchAgain, setfetchAgain }) {
+export default function UpdateGroupChatModal() {
 
     const { user, SelectChat, setSelectChat, setChats, chats } = ChatState()
 

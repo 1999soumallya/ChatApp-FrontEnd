@@ -6,7 +6,7 @@ import { getSender, getSenderDetails } from '../../Config/ChatLogics'
 import ProfileModel from './ProfileModel'
 import UpdateGroupChatModal from './UpdateGroupChatModal'
 
-export default function SingleChat({ fetchAgain, setfetchAgain }) {
+export default function SingleChat() {
 
     const { user, SelectChat, setSelectChat } = ChatState()
 
@@ -20,8 +20,10 @@ export default function SingleChat({ fetchAgain, setfetchAgain }) {
                             {SelectChat.isGroupChat ? (
                                 <>
                                     {SelectChat.chatName.toUpperCase()}
-                                    {SelectChat.groupAdmin._id === user.id && (<IconButton display={"flex"} icon={<DeleteIcon />} colorScheme="red" />)}
-                                    <UpdateGroupChatModal fetchAgain={fetchAgain} setfetchAgain={setfetchAgain} />
+                                    <Box display={"flex"} justifyContent={"space-around"} w={"10%"}>
+                                        {SelectChat.groupAdmin._id === user.id && (<IconButton display={"flex"} icon={<DeleteIcon />} colorScheme="red" />)}
+                                        <UpdateGroupChatModal />
+                                    </Box>
                                 </>
                             ) : (
                                 <>
