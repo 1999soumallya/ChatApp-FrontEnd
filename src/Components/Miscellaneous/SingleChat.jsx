@@ -1,7 +1,7 @@
 import React from 'react'
 import { ChatState } from '../../Context/ChatProvider'
 import { Box, IconButton, Text } from '@chakra-ui/react'
-import { ArrowBackIcon } from '@chakra-ui/icons'
+import { ArrowBackIcon, DeleteIcon } from '@chakra-ui/icons'
 import { getSender, getSenderDetails } from '../../Config/ChatLogics'
 import ProfileModel from './ProfileModel'
 import UpdateGroupChatModal from './UpdateGroupChatModal'
@@ -20,12 +20,16 @@ export default function SingleChat({ fetchAgain, setfetchAgain }) {
                             {SelectChat.isGroupChat ? (
                                 <>
                                     {SelectChat.chatName.toUpperCase()}
+                                    {SelectChat.groupAdmin._id === user.id && (<IconButton display={"flex"} icon={<DeleteIcon />} colorScheme="red" />)}
                                     <UpdateGroupChatModal fetchAgain={fetchAgain} setfetchAgain={setfetchAgain} />
                                 </>
                             ) : (
                                 <>
                                     {getSender(user, SelectChat.users)}
-                                    <ProfileModel user={getSenderDetails(user, SelectChat.users) } />
+                                    <Box display={"flex"} justifyContent={"space-around"} w={"10%"}>
+                                        <IconButton display={"flex"} icon={<DeleteIcon />} colorScheme="red" />
+                                        <ProfileModel user={getSenderDetails(user, SelectChat.users)} />
+                                    </Box>
                                 </>
                             )}
                         </Text>

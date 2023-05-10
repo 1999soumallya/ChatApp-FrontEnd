@@ -17,7 +17,7 @@ export default function GroupChatModal({ children }) {
     const dispatch = useDispatch()
 
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const { chats, setChats } = ChatState()
+    const { chats, setChats, setSelectChat } = ChatState()
 
     const { loading, users, error } = useSelector((state) => state.getUserBySearch)
     const { CreateGroup, CreateGroupError } = useSelector((state) => state.createGroup)
@@ -38,6 +38,7 @@ export default function GroupChatModal({ children }) {
 
     useEffect(() => {
         if (CreateGroup) {
+            setSelectChat(...CreateGroup)
             setChats([...CreateGroup, ...chats])
             onClose()
             toast({ title: "New Group Chat Created!", status: "success", duration: 5000, isClosable: true, position: "bottom-left" })
