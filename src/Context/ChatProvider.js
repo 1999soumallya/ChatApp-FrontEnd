@@ -21,6 +21,10 @@ const ChatProvider = ({ children }) => {
             navigate("/")
         }
 
+        if (sessionStorage.getItem("loginemail")) {
+            navigate("/forgot_password")
+        }
+
     }, [navigate])
 
 

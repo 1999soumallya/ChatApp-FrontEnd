@@ -3,6 +3,7 @@ import './App.css';
 import Homepage from './Pages/Homepage';
 import ChatPage from './Pages/ChatPage';
 import ErrorPage from './Pages/404Page';
+import ForgotPassword from './Pages/ForgotPassword';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Route index element={<Homepage />} />
         <Route path='/chats' element={<ChatPage />} />
         <Route path='*' element={<ErrorPage />} />
+        <Route path='/forgot_password' element={<ForgotPassword />} />
       </Routes>
     </div>
   );
