@@ -1,5 +1,5 @@
 import { ViewIcon } from '@chakra-ui/icons'
-import { Box, Button, FormControl, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure, useToast } from '@chakra-ui/react'
+import { Box, Button, FormControl, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { ChatState } from '../../Context/ChatProvider'
 import UserBadgeItem from '../Chat/UserBadgeItem'
@@ -109,7 +109,7 @@ export default function UpdateGroupChatModal() {
         setGroupUsers([...GroupUsers, users])
     }
 
-    const handleSubmit = (id) => {
+    const handleSubmit = () => {
         if (GroupName === "" || GroupUsers.length === 0) {
             toast({ title: "Please fill all the feilds", status: "warning", duration: 5000, isClosable: true, position: "top-right" })
             return
@@ -155,10 +155,10 @@ export default function UpdateGroupChatModal() {
                         </FormControl>
                         <FormControl display={"flex"}>
                             <Input placeholder="Add Users eg: John, Piyush, Jane" name='groupUsers' mb={2} onChange={(e) => handleSearch(e.target.value)} />
-                            <Button variant={"solid"} isLoading={AddUserLoading} colorScheme="teal" ml={1} onClick={() => handleSubmit(SelectChat._id)} > Add </Button>
+                            <Button variant={"solid"} isLoading={AddUserLoading} colorScheme="teal" ml={1} onClick={handleSubmit} > Add </Button>
                         </FormControl>
                         {
-                            loading ? (<>Loading</>) : (Array.isArray(SearchResult) === true) ? SearchResult?.slice(0, 3).map((items) => (
+                            loading ? (<><Spinner size={"lg"} /></>) : (Array.isArray(SearchResult) === true) ? SearchResult?.slice(0, 3).map((items) => (
                                 <UserListItem user={items} key={items._id} handleFunction={() => handleAddUserInGroup(items)} />
                             )) : (<Text color={"red"} colorScheme="red" fontSize={"14px"} fontWeight={"medium"} fontFamily={"Work sans"}>{SearchResult}</Text>)
                         }

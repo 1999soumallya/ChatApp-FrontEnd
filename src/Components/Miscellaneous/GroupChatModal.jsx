@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Button, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure, useToast } from '@chakra-ui/react'
+import { Box, Button, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import { CreateGroupAction, GetUserBySearchAction } from '../../Redux/Action/ChatAction'
 import UserListItem from '../Chat/UserListItem'
 import UserBadgeItem from '../Chat/UserBadgeItem'
@@ -107,7 +107,7 @@ export default function GroupChatModal({ children }) {
                         </Box>
                         {/* Rander searched users */}
                         {
-                            Loading ? (<>Loading</>) : (Array.isArray(SearchResult) === true) ? SearchResult?.slice(0, 4).map((items) => (
+                            Loading ? (<><Spinner mt={"5"} size={"lg"} /></>) : (Array.isArray(SearchResult) === true) ? SearchResult?.slice(0, 4).map((items) => (
                                 <UserListItem user={items} key={items._id} handleFunction={() => handleAddUserInGroup(items)} />
                             )) : (<Text color={"red"} colorScheme="red" fontSize={"14px"} fontWeight={"medium"} fontFamily={"Work sans"}>{SearchResult}</Text>)
                         }

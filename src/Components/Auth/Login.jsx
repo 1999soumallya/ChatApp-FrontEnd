@@ -23,7 +23,7 @@ export default function Login() {
       toast({ title: userInfo.message, status: "success", duration: 5000, isClosable: true, position: "bottom" })
     }
 
-    if ((userInfo.details !== null) && (userInfo.token !== null)) {
+    if (userInfo && (userInfo.details !== null) && (userInfo.token !== null)) {
       navigate("/chats")
     }
 
