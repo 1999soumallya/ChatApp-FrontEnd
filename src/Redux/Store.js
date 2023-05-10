@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from "redux-thunk"
 import { composeWithDevTools } from "redux-devtools-extension"
 import { LoginReducer, RegistractionReducer } from './Reducer/UserReducer'
-import { AccessChatByIdReducer, CreateGroupReducer, FechChatsReducer, GetUserBySearchReducer, UpdateGroupNameReducer } from './Reducer/ChatReducer'
+import { AccessChatByIdReducer, CreateGroupReducer, FechChatsReducer, GetUserBySearchReducer, RemoveGroupUserReducer, UpdateGroupNameReducer } from './Reducer/ChatReducer'
 
 const UserInfoFromStorage = localStorage.getItem("userInfo") ? localStorage.getItem("userInfo") : null
 const UserTokenFromStorage = localStorage.getItem("Authtoken") ? localStorage.getItem("Authtoken") : null
@@ -15,7 +15,8 @@ const reducer = combineReducers({
     accessChatById: AccessChatByIdReducer,
     fetchChats: FechChatsReducer,
     createGroup: CreateGroupReducer,
-    groupRename: UpdateGroupNameReducer
+    groupRename: UpdateGroupNameReducer,
+    removeUser: RemoveGroupUserReducer
 })
 
 const initialState = {

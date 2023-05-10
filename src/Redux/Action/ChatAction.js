@@ -1,5 +1,5 @@
 import axios from "axios"
-import { ACCESS_CHAT_BY_ID_FAILED, ACCESS_CHAT_BY_ID_REQUEST, ACCESS_CHAT_BY_ID_SUCCESS, CLEAR_USER_SEARCH_RESULT, CREATE_GROUP_CHAT_FAILED, CREATE_GROUP_CHAT_REQUEST, CREATE_GROUP_CHAT_SUCCESS, FETCH_CHAT_FAILD, FETCH_CHAT_REQUEST, FETCH_CHAT_SUCCESS, GET_USER_BY_SEARCH_FAILS, GET_USER_BY_SEARCH_REQUEST, GET_USER_BY_SEARCH_SUCCESS, UPDATE_GROUP_NAME_FAILED, UPDATE_GROUP_NAME_REQUEST, UPDATE_GROUP_NAME_SUCCESS } from "../Constants/ChatConstants"
+import { ACCESS_CHAT_BY_ID_FAILED, ACCESS_CHAT_BY_ID_REQUEST, ACCESS_CHAT_BY_ID_SUCCESS, CLEAR_USER_SEARCH_RESULT, CREATE_GROUP_CHAT_FAILED, CREATE_GROUP_CHAT_REQUEST, CREATE_GROUP_CHAT_SUCCESS, FETCH_CHAT_FAILD, FETCH_CHAT_REQUEST, FETCH_CHAT_SUCCESS, GET_USER_BY_SEARCH_FAILS, GET_USER_BY_SEARCH_REQUEST, GET_USER_BY_SEARCH_SUCCESS, REMOVE_GROUP_USER_FAILED, REMOVE_GROUP_USER_REQUEST, REMOVE_GROUP_USER_SUCCESS, UPDATE_GROUP_NAME_FAILED, UPDATE_GROUP_NAME_REQUEST, UPDATE_GROUP_NAME_SUCCESS } from "../Constants/ChatConstants"
 
 function config(token) {
     return { headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` } }
@@ -92,5 +92,21 @@ export const RenameGroupAction = (chatId, chatName) => async (dispatch, getState
         })
     } catch (error) {
         dispatch({ type: CREATE_GROUP_CHAT_FAILED, payload: error.message })
+    }
+}
+
+export const RemoveGroupUserAction = (chatId, userId) => async (dispatch, getState) => {
+    try {
+        dispatch({ type: REMOVE_GROUP_USER_REQUEST })
+        const { loginDetails: { userInfo: { token } } } = getState()
+        await axios.put(`${process.env.REACT_APP_API_URL}/api/chat/remove_user`, { chatId, userId }, config(token)).then((response) => {
+            if (response) {
+                dispatch({ type: REMOVE_GROUP_USER_SUCCESS, payload: response.data })
+            }
+        }).catch((error) => {
+            dispatch({ type: REMOVE_GROUP_USER_FAILED, payload: error.response.data })
+        })
+    } catch (error) {
+        dispatch({ type: REMOVE_GROUP_USER_FAILED, payload: error.message })
     }
 }
