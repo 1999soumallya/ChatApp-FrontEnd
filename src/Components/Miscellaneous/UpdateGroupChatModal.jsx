@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { ChatState } from '../../Context/ChatProvider'
 import UserBadgeItem from '../Chat/UserBadgeItem'
 import { useDispatch, useSelector } from 'react-redux'
-import { GetUserBySearchAction, RemoveGroupUserAction, RenameGroupAction } from '../../Redux/Action/ChatAction'
+import { AddUserGroupAction, GetUserBySearchAction, RemoveGroupUserAction, RenameGroupAction } from '../../Redux/Action/ChatAction'
 import UserListItem from '../Chat/UserListItem'
 
 export default function UpdateGroupChatModal() {
@@ -23,6 +23,7 @@ export default function UpdateGroupChatModal() {
     const { GroupRenameloading, GroupRename, GroupRenameError } = useSelector((state) => state.groupRename)
     const { GroupUserUpdate, GroupUserUpdateError } = useSelector((state) => state.removeUser)
     const { loading, users, error } = useSelector((state) => state.getUserBySearch)
+    const { AddUserLoading, AddUser, AddUserError } = useSelector((state) => state.addUser)
 
     useEffect(() => {
         setGroupName(SelectChat.chatName)
@@ -33,13 +34,12 @@ export default function UpdateGroupChatModal() {
         if (GroupRename) {
             setSelectChat(GroupRename)
             setChats([GroupRename, ...chats.filter((items) => { return items._id !== GroupRename._id })])
-            onClose()
         }
 
         if (GroupRenameError) {
             toast({ title: GroupRenameError.message, status: "error", isClosable: true, duration: 5000, position: "top-right" })
         }
-    }, [GroupRename, GroupRenameError, chats, dispatch, onClose, setChats, setSelectChat, toast])
+    }, [GroupRename, GroupRenameError, chats, dispatch, setChats, setSelectChat, toast])
 
     useEffect(() => {
         if (GroupUserUpdate) {
@@ -56,6 +56,18 @@ export default function UpdateGroupChatModal() {
             toast({ title: "Error occured!", description: GroupUserUpdateError.message, duration: 5000, isClosable: true, position: "top-left" })
         }
     }, [GroupRename, GroupUserUpdate, GroupUserUpdateError, chats, flag, setChats, setSelectChat, toast])
+
+    useEffect(() => {
+        if (AddUser) {
+            setSelectChat(AddUser)
+            setChats([AddUser, ...chats.filter((items) => { return items._id !== AddUser._id })])
+        }
+
+        if (AddUserError) {
+            toast({ title: AddUserError.message, status: "error", isClosable: true, duration: 5000, position: "top-right" })
+        }
+    }, [AddUser, AddUserError, chats, setChats, setSelectChat, toast])
+
 
     useEffect(() => {
         if (users) {
@@ -102,7 +114,7 @@ export default function UpdateGroupChatModal() {
             toast({ title: "Please fill all the feilds", status: "warning", duration: 5000, isClosable: true, position: "top-right" })
             return
         }
-        // dispatch(CreateGroupAction(GroupName, GroupUsers))
+        dispatch(AddUserGroupAction(SelectChat._id, GroupUsers))
     }
 
     const handleDelete = (user) => {
@@ -143,7 +155,7 @@ export default function UpdateGroupChatModal() {
                         </FormControl>
                         <FormControl display={"flex"}>
                             <Input placeholder="Add Users eg: John, Piyush, Jane" name='groupUsers' mb={2} onChange={(e) => handleSearch(e.target.value)} />
-                            <Button variant={"solid"} isLoading={GroupRenameloading} colorScheme="teal" ml={1} onClick={() => handleSubmit(SelectChat._id)} > Add </Button>
+                            <Button variant={"solid"} isLoading={AddUserLoading} colorScheme="teal" ml={1} onClick={() => handleSubmit(SelectChat._id)} > Add </Button>
                         </FormControl>
                         {
                             loading ? (<>Loading</>) : (Array.isArray(SearchResult) === true) ? SearchResult?.slice(0, 3).map((items) => (
