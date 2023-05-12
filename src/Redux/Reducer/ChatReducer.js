@@ -1,4 +1,4 @@
-import { ACCESS_CHAT_BY_ID_FAILED, ACCESS_CHAT_BY_ID_REQUEST, ACCESS_CHAT_BY_ID_SUCCESS, CLEAR_USER_SEARCH_RESULT, CREATE_GROUP_CHAT_FAILED, CREATE_GROUP_CHAT_REQUEST, CREATE_GROUP_CHAT_SUCCESS, FETCH_CHAT_FAILD, FETCH_CHAT_REQUEST, FETCH_CHAT_SUCCESS, GET_USER_BY_SEARCH_FAILS, GET_USER_BY_SEARCH_REQUEST, GET_USER_BY_SEARCH_SUCCESS, UPDATE_GROUP_NAME_FAILED, UPDATE_GROUP_NAME_REQUEST, UPDATE_GROUP_NAME_SUCCESS, REMOVE_GROUP_USER_FAILED, REMOVE_GROUP_USER_REQUEST, REMOVE_GROUP_USER_SUCCESS, ADD_USER_GROUP_REQUEST, ADD_USER_GROUP_SUCCESS, ADD_USER_GROUP_FAILED, DELETE_CHAT_REQUEST, DELETE_CHAT_SUCCESS, DELETE_CHAT_FAILED } from "../Constants/ChatConstants";
+import { ACCESS_CHAT_BY_ID_FAILED, ACCESS_CHAT_BY_ID_REQUEST, ACCESS_CHAT_BY_ID_SUCCESS, CLEAR_USER_SEARCH_RESULT, CREATE_GROUP_CHAT_FAILED, CREATE_GROUP_CHAT_REQUEST, CREATE_GROUP_CHAT_SUCCESS, FETCH_CHAT_FAILD, FETCH_CHAT_REQUEST, FETCH_CHAT_SUCCESS, GET_USER_BY_SEARCH_FAILS, GET_USER_BY_SEARCH_REQUEST, GET_USER_BY_SEARCH_SUCCESS, UPDATE_GROUP_NAME_FAILED, UPDATE_GROUP_NAME_REQUEST, UPDATE_GROUP_NAME_SUCCESS, REMOVE_GROUP_USER_FAILED, REMOVE_GROUP_USER_REQUEST, REMOVE_GROUP_USER_SUCCESS, ADD_USER_GROUP_REQUEST, ADD_USER_GROUP_SUCCESS, ADD_USER_GROUP_FAILED, DELETE_CHAT_REQUEST, DELETE_CHAT_SUCCESS, DELETE_CHAT_FAILED, GET_SINGLE_CHAT_MASSGESS_REQUEST, GET_SINGLE_CHAT_MASSGESS_SUCCESS, GET_SINGLE_CHAT_MASSGESS_FAILED, CREATE_SINGLE_CHAT_MASSGESS_SUCCESS, CREATE_SINGLE_CHAT_MASSGESS_FAILED, CREATE_SINGLE_CHAT_MASSGESS_REQUEST } from "../Constants/ChatConstants";
 
 export const GetUserBySearchReducer = (state = { users: [] }, action) => {
     switch (action.type) {
@@ -125,6 +125,38 @@ export const DeleteChatReducer = (state = {}, action) => {
 
         case DELETE_CHAT_FAILED:
             return { DeleteLoading: false, DeleteError: action.payload }
+
+        default:
+            return state;
+    }
+}
+
+export const GetSingleChatMessageReducer = (state = { messages: [] }, action) => {
+    switch (action.type) {
+        case GET_SINGLE_CHAT_MASSGESS_REQUEST:
+            return { loading: true, messages: [] };
+
+        case GET_SINGLE_CHAT_MASSGESS_SUCCESS:
+            return { loading: false, messages: action.payload };
+
+        case GET_SINGLE_CHAT_MASSGESS_FAILED:
+            return { loading: false, error: action.payload };
+
+        default:
+            return state;
+    }
+}
+
+export const CreateSingleChatMessageReducer = (state = {}, action) => {
+    switch (action.type) {
+        case CREATE_SINGLE_CHAT_MASSGESS_REQUEST:
+            return { Createmessagesloading: true };
+
+        case CREATE_SINGLE_CHAT_MASSGESS_SUCCESS:
+            return { Createmessagesloading: false, Createmessages: action.payload };
+
+        case CREATE_SINGLE_CHAT_MASSGESS_FAILED:
+            return { Createmessagesloading: false, Createmessageserror: action.payload };
 
         default:
             return state;

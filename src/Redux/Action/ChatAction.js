@@ -1,5 +1,5 @@
 import axios from "axios"
-import { ACCESS_CHAT_BY_ID_FAILED, ACCESS_CHAT_BY_ID_REQUEST, ACCESS_CHAT_BY_ID_SUCCESS, ADD_USER_GROUP_FAILED, ADD_USER_GROUP_REQUEST, ADD_USER_GROUP_SUCCESS, CLEAR_USER_SEARCH_RESULT, CREATE_GROUP_CHAT_FAILED, CREATE_GROUP_CHAT_REQUEST, CREATE_GROUP_CHAT_SUCCESS, DELETE_CHAT_FAILED, DELETE_CHAT_REQUEST, DELETE_CHAT_SUCCESS, FETCH_CHAT_FAILD, FETCH_CHAT_REQUEST, FETCH_CHAT_SUCCESS, GET_USER_BY_SEARCH_FAILS, GET_USER_BY_SEARCH_REQUEST, GET_USER_BY_SEARCH_SUCCESS, REMOVE_GROUP_USER_FAILED, REMOVE_GROUP_USER_REQUEST, REMOVE_GROUP_USER_SUCCESS, UPDATE_GROUP_NAME_FAILED, UPDATE_GROUP_NAME_REQUEST, UPDATE_GROUP_NAME_SUCCESS } from "../Constants/ChatConstants"
+import { ACCESS_CHAT_BY_ID_FAILED, ACCESS_CHAT_BY_ID_REQUEST, ACCESS_CHAT_BY_ID_SUCCESS, ADD_USER_GROUP_FAILED, ADD_USER_GROUP_REQUEST, ADD_USER_GROUP_SUCCESS, CLEAR_USER_SEARCH_RESULT, CREATE_GROUP_CHAT_FAILED, CREATE_GROUP_CHAT_REQUEST, CREATE_GROUP_CHAT_SUCCESS, CREATE_SINGLE_CHAT_MASSGESS_FAILED, CREATE_SINGLE_CHAT_MASSGESS_REQUEST, CREATE_SINGLE_CHAT_MASSGESS_SUCCESS, DELETE_CHAT_FAILED, DELETE_CHAT_REQUEST, DELETE_CHAT_SUCCESS, FETCH_CHAT_FAILD, FETCH_CHAT_REQUEST, FETCH_CHAT_SUCCESS, GET_SINGLE_CHAT_MASSGESS_FAILED, GET_SINGLE_CHAT_MASSGESS_REQUEST, GET_SINGLE_CHAT_MASSGESS_SUCCESS, GET_USER_BY_SEARCH_FAILS, GET_USER_BY_SEARCH_REQUEST, GET_USER_BY_SEARCH_SUCCESS, REMOVE_GROUP_USER_FAILED, REMOVE_GROUP_USER_REQUEST, REMOVE_GROUP_USER_SUCCESS, UPDATE_GROUP_NAME_FAILED, UPDATE_GROUP_NAME_REQUEST, UPDATE_GROUP_NAME_SUCCESS } from "../Constants/ChatConstants"
 
 function config(token) {
     return { headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` } }
@@ -28,7 +28,6 @@ export const ClearUserSearchAction = () => async (dispatch) => {
         dispatch({ type: GET_USER_BY_SEARCH_FAILS, payload: error.response.data })
     }
 }
-
 
 export const AccessChatByIdAction = (userId) => async (dispatch, getState) => {
     try {
@@ -140,6 +139,37 @@ export const DeleteChatAction = (chatId) => async (dispatch, getState) => {
         })
     } catch (error) {
         dispatch({ type: DELETE_CHAT_FAILED, payload: error.message })
+    }
+}
 
+export const GetSingleChatMessageAction = (chatId) => async (dispatch, getState) => {
+    try {
+        dispatch({ type: GET_SINGLE_CHAT_MASSGESS_REQUEST })
+        const { loginDetails: { userInfo: { token } } } = getState()
+        await axios.get(`${process.env.REACT_APP_API_URL}/api/message/${chatId}`, config(token)).then((response) => {
+            if (response) {
+                dispatch({ type: GET_SINGLE_CHAT_MASSGESS_SUCCESS, payload: response.data })
+            }
+        }).catch((error) => {
+            dispatch({ type: GET_SINGLE_CHAT_MASSGESS_FAILED, payload: error.response.data })
+        })
+    } catch (error) {
+        dispatch({ type: GET_SINGLE_CHAT_MASSGESS_FAILED, payload: error.message })
+    }
+}
+
+export const CreateSingleChatMessageAction = (chatId, content) => async (dispatch, getState) => {
+    try {
+        dispatch({ type: CREATE_SINGLE_CHAT_MASSGESS_REQUEST })
+        const { loginDetails: { userInfo: { token } } } = getState()
+        await axios.post(`${process.env.REACT_APP_API_URL}/api/message/`, { chatId, content }, config(token)).then((response) => {
+            if (response) {
+                dispatch({ type: CREATE_SINGLE_CHAT_MASSGESS_SUCCESS, payload: response.data })
+            }
+        }).catch((error) => {
+            dispatch({ type: CREATE_SINGLE_CHAT_MASSGESS_FAILED, payload: error.response.data })
+        })
+    } catch (error) {
+        dispatch({ type: CREATE_SINGLE_CHAT_MASSGESS_FAILED, payload: error.message })
     }
 }

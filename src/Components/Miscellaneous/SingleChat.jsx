@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ChatState } from '../../Context/ChatProvider'
-import { Box, IconButton, Text, useToast } from '@chakra-ui/react'
-import { ArrowBackIcon, DeleteIcon } from '@chakra-ui/icons'
+import { Box, FormControl, IconButton, Input, InputGroup, InputRightElement, Spinner, Text, useToast } from '@chakra-ui/react'
+import { ArrowBackIcon, ChevronRightIcon, DeleteIcon } from '@chakra-ui/icons'
 import { getSender, getSenderDetails } from '../../Config/ChatLogics'
 import ProfileModel from './ProfileModel'
 import UpdateGroupChatModal from './UpdateGroupChatModal'
@@ -9,6 +9,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { DeleteChatAction } from '../../Redux/Action/ChatAction'
 
 export default function SingleChat() {
+
+    const [Message, setMessage] = useState([])
+    const [Loading, setLoading] = useState(false)
+    const [newMessage, setnewMessage] = useState()
 
     const { user, SelectChat, setSelectChat, chats, setChats } = ChatState()
 
@@ -32,6 +36,16 @@ export default function SingleChat() {
             dispatch(DeleteChatAction(id))
             setChats([...chats.filter((items) => { return items._id !== id })])
         }
+    }
+
+    const sendMessage = () => {
+
+    }
+
+    const typingHandaler = (e) => {
+        setnewMessage(e)
+
+        // Typing Indicator Logic
     }
 
     return (
@@ -60,7 +74,21 @@ export default function SingleChat() {
                             )}
                         </Text>
                         <Box display={"flex"} flexDir={"column"} justifyContent={"flex-end"} p={3} bg={"#E8E8E8"} w={"100%"} h={"100%"} borderRadius={"lg"} overflowY={"hidden"}>
+                            {
+                                Loading ? (
+                                    <Spinner size={"xl"} w={20} h={20} alignSelf={"center"} margin={"auto"} />
+                                ) : (
+                                    <div>
 
+                                    </div>
+                                )
+                            }
+                            <FormControl onKeyDown={sendMessage} isRequired mt={3}>
+                                <InputGroup overflow={"hidden"}>
+                                    <Input variant={"filled"} borderRadius={20} bg={"#E0E0E0"} placeholder='Enter a message...' onChange={(e) => typingHandaler(e.target.value)} value={newMessage} />
+                                    <InputRightElement><IconButton colorScheme="blue" icon={<ChevronRightIcon />} isRound p={"2px"} onClick={sendMessage} /></InputRightElement>
+                                </InputGroup>
+                            </FormControl>
                         </Box>
                     </>
                 ) : (

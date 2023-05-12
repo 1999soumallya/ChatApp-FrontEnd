@@ -1,9 +1,7 @@
 export const getSender = (currentuser, users) => {
-    users = users.filter((items) => items._id !== currentuser.id)
-    return users[0].name
+    return users[0]._id === currentuser._id ? users[1].name : users[0].name
 }
 
 export const getSenderDetails = (currentuser, users) => {
-    users = users.filter((items) => items._id !== currentuser.id)
-    return users[0]
+    return users[0]._id === currentuser._id ? users[1] : users[0]
 }
