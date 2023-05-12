@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { ChatState } from '../../Context/ChatProvider'
 import { Box, FormControl, IconButton, Input, InputGroup, InputRightElement, Spinner, Text, useToast } from '@chakra-ui/react'
 import { ArrowBackIcon, ChevronRightIcon, DeleteIcon } from '@chakra-ui/icons'
@@ -6,19 +6,52 @@ import { getSender, getSenderDetails } from '../../Config/ChatLogics'
 import ProfileModel from './ProfileModel'
 import UpdateGroupChatModal from './UpdateGroupChatModal'
 import { useDispatch, useSelector } from 'react-redux'
-import { DeleteChatAction } from '../../Redux/Action/ChatAction'
+import { CreateSingleChatMessageAction, DeleteChatAction, GetSingleChatMessageAction } from '../../Redux/Action/ChatAction'
+import '../../Css/style.css'
+import ScrollBarChat from '../Chat/ScrollBarChat'
 
 export default function SingleChat() {
-
-    const [Message, setMessage] = useState([])
     const [Loading, setLoading] = useState(false)
+    const [Messages, setMessages] = useState([])
     const [newMessage, setnewMessage] = useState()
 
     const { user, SelectChat, setSelectChat, chats, setChats } = ChatState()
 
     const dispatch = useDispatch()
     const { DeleteLoading, Delete, DeleteError } = useSelector((state) => state.deleteChat)
+    const { loading, messages, error } = useSelector((state) => state.allMessages)
+    const { Createmessages, Createmessageserror } = useSelector((state) => state.createMessage)
     const toast = useToast()
+
+    const FetchMessages = useCallback(() => {
+        dispatch(GetSingleChatMessageAction(SelectChat._id))
+    }, [SelectChat, dispatch])
+
+    useEffect(() => {
+        if (SelectChat) {
+            FetchMessages()
+        }
+    }, [FetchMessages, SelectChat])
+
+    useEffect(() => {
+        setLoading(loading)
+        if (messages) {
+            setMessages(messages)
+        }
+        if (error) {
+            toast({ title: "Error occure!", description: error.message, duration: 5000, isClosable: true, position: "top-right" })
+        }
+    }, [error, loading, messages, toast])
+
+
+    useEffect(() => {
+        if (Createmessages) {
+            setMessages([...Messages, Createmessages])
+        }
+        if (Createmessageserror) {
+            toast({ title: "Error occure!", description: Createmessageserror.message, duration: 5000, isClosable: true, position: "top-right" })
+        }
+    }, [Createmessages, Createmessageserror, toast])
 
     useEffect(() => {
         if (Delete) {
@@ -38,8 +71,11 @@ export default function SingleChat() {
         }
     }
 
-    const sendMessage = () => {
-
+    const sendMessage = (e) => {
+        if ((e.key === "Enter") || (e._reactName === "onClick")) {
+            dispatch(CreateSingleChatMessageAction(SelectChat._id, newMessage))
+            setnewMessage("")
+        }
     }
 
     const typingHandaler = (e) => {
@@ -60,7 +96,7 @@ export default function SingleChat() {
                                     {SelectChat.chatName.toUpperCase()}
                                     <Box display={"flex"} justifyContent={"space-around"} w={"10%"}>
                                         {SelectChat.groupAdmin._id === user.id && (<IconButton isLoading={DeleteLoading} isRound display={"flex"} icon={<DeleteIcon />} colorScheme="red" onClick={() => DeleteChat(SelectChat._id)} />)}
-                                        <UpdateGroupChatModal />
+                                        <UpdateGroupChatModal FetchMessages={FetchMessages} />
                                     </Box>
                                 </>
                             ) : (
@@ -78,8 +114,8 @@ export default function SingleChat() {
                                 Loading ? (
                                     <Spinner size={"xl"} w={20} h={20} alignSelf={"center"} margin={"auto"} />
                                 ) : (
-                                    <div>
-
+                                    <div className='messages'>
+                                        <ScrollBarChat Messages={Messages} />
                                     </div>
                                 )
                             }

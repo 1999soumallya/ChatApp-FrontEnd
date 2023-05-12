@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AddUserGroupAction, GetUserBySearchAction, RemoveGroupUserAction, RenameGroupAction } from '../../Redux/Action/ChatAction'
 import UserListItem from '../Chat/UserListItem'
 
-export default function UpdateGroupChatModal() {
+export default function UpdateGroupChatModal({ FetchMessages }) {
 
     const { user, SelectChat, setSelectChat, setChats, chats } = ChatState()
 
@@ -47,6 +47,7 @@ export default function UpdateGroupChatModal() {
                 setSelectChat("")
                 setChats([...chats.filter((items) => { return items._id !== GroupUserUpdate._id })])
             } else {
+                FetchMessages()
                 setSelectChat(GroupUserUpdate)
                 setChats([GroupUserUpdate, ...chats.filter((items) => { return items._id !== GroupUserUpdate._id })])
             }
@@ -68,7 +69,6 @@ export default function UpdateGroupChatModal() {
         }
     }, [AddUser, AddUserError, chats, setChats, setSelectChat, toast])
 
-
     useEffect(() => {
         if (users) {
             if (users.users?.length > 0) {
@@ -81,7 +81,6 @@ export default function UpdateGroupChatModal() {
             toast({ title: "Error occured!", description: error.message, status: "error", duration: 5000, isClosable: true, position: "bottom-left" })
         }
     }, [SearchResult, error, toast, users])
-
 
     const handleRemove = (users) => {
         if (user.id === users._id) {
