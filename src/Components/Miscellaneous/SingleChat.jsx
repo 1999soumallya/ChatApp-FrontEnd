@@ -9,11 +9,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CreateSingleChatMessageAction, DeleteChatAction, GetSingleChatMessageAction } from '../../Redux/Action/ChatAction'
 import '../../Css/style.css'
 import ScrollBarChat from '../Chat/ScrollBarChat'
+import { io } from 'socket.io-client'
+
+var socket, selectedChatCompare;
 
 export default function SingleChat() {
     const [Loading, setLoading] = useState(false)
     const [Messages, setMessages] = useState([])
     const [newMessage, setnewMessage] = useState()
+    const [SocketConnected, setSocketConnected] = useState(false)
 
     const { user, SelectChat, setSelectChat, chats, setChats } = ChatState()
 
@@ -23,13 +27,32 @@ export default function SingleChat() {
     const { Createmessages, Createmessageserror } = useSelector((state) => state.createMessage)
     const toast = useToast()
 
+    useEffect(() => {
+        socket = io(process.env.REACT_APP_API_URL)
+        socket.emit("setup", user)
+        socket.on("connected", () => setSocketConnected(true))
+    }, [])
+
+    useEffect(() => {
+        socket.on("message recive", (newMessageRecived) => {
+            if (!selectedChatCompare || selectedChatCompare._id !== newMessageRecived.chat._id) {
+                // Give Me Th Notification
+            } else {
+                setMessages([...Messages, newMessageRecived])
+            }
+            
+        })
+    })
+    
     const FetchMessages = useCallback(() => {
         dispatch(GetSingleChatMessageAction(SelectChat._id))
+        socket.emit("join chat", SelectChat._id)
     }, [SelectChat, dispatch])
 
     useEffect(() => {
         if (SelectChat) {
             FetchMessages()
+            selectedChatCompare = SelectChat
         }
     }, [FetchMessages, SelectChat])
 
@@ -46,6 +69,7 @@ export default function SingleChat() {
 
     useEffect(() => {
         if (Createmessages) {
+            socket.emit("new message", Createmessages)
             setMessages([...Messages, Createmessages])
         }
         if (Createmessageserror) {
