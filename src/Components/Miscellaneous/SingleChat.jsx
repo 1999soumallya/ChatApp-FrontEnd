@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react'
 import { ChatState } from '../../Context/ChatProvider'
 import { Box, FormControl, IconButton, Input, InputGroup, InputRightElement, Spinner, Text, useToast } from '@chakra-ui/react'
@@ -10,6 +11,8 @@ import { CreateSingleChatMessageAction, DeleteChatAction, GetSingleChatMessageAc
 import '../../Css/style.css'
 import ScrollBarChat from '../Chat/ScrollBarChat'
 import { io } from 'socket.io-client'
+import Lottie from 'react-lottie'
+import * as animationData from '../../Animation/typing.json'
 
 var socket, selectedChatCompare;
 
@@ -22,6 +25,14 @@ export default function SingleChat() {
     const [IsTyping, setIsTyping] = useState(false)
 
     const { user, SelectChat, setSelectChat, chats, setChats } = ChatState()
+    const defaultOptions = {
+        loop: true,
+        autoplay: true,
+        animationData: animationData,
+        rendererSettings: {
+            preserveAspectRatio: "xMidYMid slice"
+        }
+    }
 
     const dispatch = useDispatch()
     const { DeleteLoading, Delete, DeleteError } = useSelector((state) => state.deleteChat)
@@ -112,7 +123,6 @@ export default function SingleChat() {
         if (!SocketConnected) return;
         if (!Typing) {
             setTyping(true)
-            console.log(Typing)
             socket.emit("typing", SelectChat._id)
         }
         let lastTypingTime = new Date().getTime()
@@ -163,7 +173,11 @@ export default function SingleChat() {
                             }
                             <FormControl onKeyDown={sendMessage} isRequired mt={3}>
                                 {
-                                    IsTyping ? (<div>Loading ...</div>) : (<></>)
+                                    IsTyping ? (
+                                        <div>
+                                            <Lottie options={defaultOptions} width={70} style={{ marginBottom: 15, marginLeft: 0 }} />
+                                        </div>
+                                    ) : (<></>)
                                 }
                                 <InputGroup overflow={"hidden"}>
                                     <Input variant={"filled"} borderRadius={20} bg={"#E0E0E0"} placeholder='Enter a message...' onChange={(e) => typingHandaler(e.target.value)} value={newMessage} />
