@@ -18,6 +18,8 @@ export default function SingleChat() {
     const [Messages, setMessages] = useState([])
     const [newMessage, setnewMessage] = useState()
     const [SocketConnected, setSocketConnected] = useState(false)
+    const [Typing, setTyping] = useState(false)
+    const [IsTyping, setIsTyping] = useState(false)
 
     const { user, SelectChat, setSelectChat, chats, setChats } = ChatState()
 
@@ -31,6 +33,8 @@ export default function SingleChat() {
         socket = io(process.env.REACT_APP_API_URL)
         socket.emit("setup", user)
         socket.on("connected", () => setSocketConnected(true))
+        socket.on("typing", () => setIsTyping(true))
+        socket.on("stop typing", () => setIsTyping(false))
     }, [])
 
     useEffect(() => {
@@ -40,10 +44,10 @@ export default function SingleChat() {
             } else {
                 setMessages([...Messages, newMessageRecived])
             }
-            
+
         })
     })
-    
+
     const FetchMessages = useCallback(() => {
         dispatch(GetSingleChatMessageAction(SelectChat._id))
         socket.emit("join chat", SelectChat._id)
@@ -97,6 +101,7 @@ export default function SingleChat() {
 
     const sendMessage = (e) => {
         if ((e.key === "Enter") || (e._reactName === "onClick")) {
+            socket.emit("stop typing", SelectChat._id)
             dispatch(CreateSingleChatMessageAction(SelectChat._id, newMessage))
             setnewMessage("")
         }
@@ -104,8 +109,21 @@ export default function SingleChat() {
 
     const typingHandaler = (e) => {
         setnewMessage(e)
-
-        // Typing Indicator Logic
+        if (!SocketConnected) return;
+        if (!Typing) {
+            setTyping(true)
+            console.log(Typing)
+            socket.emit("typing", SelectChat._id)
+        }
+        let lastTypingTime = new Date().getTime()
+        setTimeout(() => {
+            let now = new Date().getTime()
+            let timeDff = now - lastTypingTime
+            if (timeDff >= 3000 && Typing) {
+                socket.emit("stop typing", SelectChat._id)
+                setTyping(false)
+            }
+        }, 3000);
     }
 
     return (
@@ -144,6 +162,9 @@ export default function SingleChat() {
                                 )
                             }
                             <FormControl onKeyDown={sendMessage} isRequired mt={3}>
+                                {
+                                    IsTyping ? (<div>Loading ...</div>) : (<></>)
+                                }
                                 <InputGroup overflow={"hidden"}>
                                     <Input variant={"filled"} borderRadius={20} bg={"#E0E0E0"} placeholder='Enter a message...' onChange={(e) => typingHandaler(e.target.value)} value={newMessage} />
                                     <InputRightElement><IconButton colorScheme="blue" icon={<ChevronRightIcon />} isRound p={"2px"} onClick={sendMessage} /></InputRightElement>
