@@ -24,7 +24,7 @@ export default function SingleChat() {
     const [Typing, setTyping] = useState(false)
     const [IsTyping, setIsTyping] = useState(false)
 
-    const { user, SelectChat, setSelectChat, chats, setChats } = ChatState()
+    const { user, SelectChat, setSelectChat, chats, setChats, Notification, setNotification } = ChatState()
     const defaultOptions = {
         loop: true,
         autoplay: true,
@@ -51,11 +51,12 @@ export default function SingleChat() {
     useEffect(() => {
         socket.on("message recive", (newMessageRecived) => {
             if (!selectedChatCompare || selectedChatCompare._id !== newMessageRecived.chat._id) {
-                // Give Me Th Notification
+                if (!Notification.includes(newMessageRecived)) {
+                    setNotification([newMessageRecived, ...Notification])
+                }
             } else {
                 setMessages([...Messages, newMessageRecived])
             }
-
         })
     })
 
