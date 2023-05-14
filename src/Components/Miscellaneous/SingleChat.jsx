@@ -25,7 +25,7 @@ export default function SingleChat() {
     const [Typing, setTyping] = useState(false)
     const [IsTyping, setIsTyping] = useState(false)
 
-    const { user, SelectChat, setSelectChat, chats, setChats, Notification, setNotification } = ChatState()
+    const { user, SelectChat, setSelectChat, chats, setChats } = ChatState()
     const defaultOptions = {
         loop: true,
         autoplay: true,

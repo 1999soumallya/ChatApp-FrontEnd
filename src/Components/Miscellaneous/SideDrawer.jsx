@@ -23,7 +23,7 @@ export default function SideDrawer() {
     const [Loading, setLoading] = useState(false)
     const [LoadingChat, setLoadingChat] = useState()
 
-    const { user, setSelectChat, chats, setChats, Notification, setNotification } = ChatState()
+    const { user, setSelectChat, chats, setChats } = ChatState()
     const nevigate = useNavigate()
     const dispatch = useDispatch()
     const { isOpen, onOpen, onClose } = useDisclosure()
