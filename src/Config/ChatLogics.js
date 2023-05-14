@@ -2,6 +2,10 @@ export const getSender = (currentuser, users) => {
     return users[0]._id === currentuser.id ? users[1].name : users[0].name
 }
 
+export const getReciver = (currentuser, users) => {
+    return users[0]._id === currentuser.id ? users[1]._id : users[0]._id
+}
+
 export const getSenderDetails = (currentuser, users) => {
     return users[0]._id === currentuser.id ? users[1] : users[0]
 }

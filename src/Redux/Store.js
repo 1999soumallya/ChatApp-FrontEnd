@@ -3,7 +3,7 @@ import thunk from "redux-thunk"
 import { composeWithDevTools } from "redux-devtools-extension"
 import { LoginReducer, RegistractionReducer } from './Reducer/UserReducer'
 import { AccessChatByIdReducer, AddUserGroupReducer, CreateGroupReducer, CreateSingleChatMessageReducer, DeleteChatReducer, FechChatsReducer, GetSingleChatMessageReducer, GetUserBySearchReducer, RemoveGroupUserReducer, UpdateGroupNameReducer } from './Reducer/ChatReducer'
-import { DeleteNotificationReducer, GetNotificationReducer, SaveNotificationReducer } from './Reducer/NotificationReducer'
+import { DeleteAllNotificationReducer, DeleteNotificationReducer, GetNotificationReducer, SaveNotificationReducer } from './Reducer/NotificationReducer'
 
 const UserInfoFromStorage = localStorage.getItem("userInfo") ? localStorage.getItem("userInfo") : null
 const UserTokenFromStorage = localStorage.getItem("Authtoken") ? localStorage.getItem("Authtoken") : null
@@ -24,7 +24,8 @@ const reducer = combineReducers({
     createMessage: CreateSingleChatMessageReducer,
     getNotification: GetNotificationReducer,
     addNotification: SaveNotificationReducer,
-    deleteNotification: DeleteNotificationReducer
+    deleteNotification: DeleteNotificationReducer,
+    deleteAllNotification: DeleteAllNotificationReducer
 })
 
 const initialState = {

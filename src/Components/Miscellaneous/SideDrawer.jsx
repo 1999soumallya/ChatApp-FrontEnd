@@ -14,6 +14,7 @@ import UserListItem from '../Chat/UserListItem'
 import { getSender } from '../../Config/ChatLogics'
 import NotificationBadge from "react-notification-badge/lib/components/NotificationBadge"
 import { Effect } from "react-notification-badge"
+import { DeleteAllNotificationAction, GetNotificationAction } from '../../Redux/Action/NotificationAction'
 
 export default function SideDrawer() {
 
@@ -31,6 +32,25 @@ export default function SideDrawer() {
 
     const { loading, users, error } = useSelector((state) => state.getUserBySearch)
     const { AccessChatloading, Accesschats, AccessChaterror } = useSelector((state) => state.accessChatById)
+    const { notifications, notificationserror } = useSelector((state) => state.getNotification)
+    const { DeleteAllnotifications, DeleteAllnotificationserror } = useSelector((state) => state.deleteAllNotification)
+    // const { } = useSelector((state) => state)
+
+    useEffect(() => {
+        dispatch(GetNotificationAction(user.id))
+    }, [dispatch, user, DeleteAllnotifications])
+
+    useEffect(() => {
+        if (notificationserror) {
+            toast({ position: "top-right", status: "error", title: notificationserror.message, isClosable: true, duration: 5000 })
+        }
+    }, [notificationserror, toast])
+
+    useEffect(() => {
+        if (DeleteAllnotificationserror) {
+            toast({ position: "top-right", status: "error", title: DeleteAllnotificationserror.message, isClosable: true, duration: 5000 })
+        }
+    }, [DeleteAllnotificationserror, toast])
 
     useEffect(() => {
         setLoading(loading)
@@ -83,6 +103,11 @@ export default function SideDrawer() {
         }
     }, [AccessChaterror, AccessChatloading, Accesschats, chats, handleClose, onClose, setChats, setSelectChat, toast])
 
+    const handleNotificationDeleteForASingleChat = (chat) => {
+        dispatch(DeleteAllNotificationAction(chat._id))
+        setSelectChat(chat)
+    }
+
     return (
         <>
             <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} bg={"white"} w={"100%"} p={"5px 10px 5px 10px"} borderWidth={"5px"}>
@@ -98,17 +123,17 @@ export default function SideDrawer() {
                 <div>
                     <Menu>
                         <MenuButton p={1}>
-                            <NotificationBadge count={Notification.length} effect={Effect.SCALE} />
+                            <NotificationBadge count={notifications.length} effect={Effect.SCALE} />
                             <BellIcon fontSize={"2xl"} m={1} />
                         </MenuButton>
                         <MenuList pl={2}>
                             {
-                                !Notification.length && "No New Messages"
+                                !notifications?.length && "No New Messages"
                             }
                             {
-                                Notification.map((notif) => (
-                                    <MenuItem key={notif._id} onClick={() => { setSelectChat(notif.chat); setNotification(Notification.filter((not) => not !== notif)) }}>
-                                        {notif.chat.isGroupChat ? `New Message in ${notif.chat.chatName}` : `New Message from ${getSender(user, notif.chat.users)}`}
+                                notifications?.map((notif) => (
+                                    <MenuItem key={notif._id} onClick={() => handleNotificationDeleteForASingleChat(notif.notificationMessages.chat)}>
+                                        {notif.notificationMessages.chat.isGroupChat ? `New Message in ${notif.notificationMessages.chat.chatName}` : `New Message from ${getSender(user, notif.notificationMessages.chat.users)}`}
                                     </MenuItem>
                                 ))
                             }

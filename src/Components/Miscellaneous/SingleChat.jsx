@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { ChatState } from '../../Context/ChatProvider'
 import { Box, FormControl, IconButton, Input, InputGroup, InputRightElement, Spinner, Text, useToast } from '@chakra-ui/react'
 import { ArrowBackIcon, ChevronRightIcon, DeleteIcon } from '@chakra-ui/icons'
-import { getSender, getSenderDetails } from '../../Config/ChatLogics'
+import { getReciver, getSender, getSenderDetails } from '../../Config/ChatLogics'
 import ProfileModel from './ProfileModel'
 import UpdateGroupChatModal from './UpdateGroupChatModal'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,6 +13,7 @@ import ScrollBarChat from '../Chat/ScrollBarChat'
 import { io } from 'socket.io-client'
 import Lottie from 'react-lottie'
 import * as animationData from '../../Animation/typing.json'
+import { DeleteNotificationAction, GetNotificationAction, SaveNotificationAction } from '../../Redux/Action/NotificationAction'
 
 var socket, selectedChatCompare;
 
@@ -51,10 +52,12 @@ export default function SingleChat() {
     useEffect(() => {
         socket.on("message recive", (newMessageRecived) => {
             if (!selectedChatCompare || selectedChatCompare._id !== newMessageRecived.chat._id) {
-                if (!Notification.includes(newMessageRecived)) {
-                    setNotification([newMessageRecived, ...Notification])
-                }
+                dispatch(GetNotificationAction(user.id))
+                // if (!Notification.includes(newMessageRecived)) {
+                //     setNotification([newMessageRecived, ...Notification])
+                // }
             } else {
+                dispatch(DeleteNotificationAction(newMessageRecived._id))
                 setMessages([...Messages, newMessageRecived])
             }
         })
@@ -86,6 +89,7 @@ export default function SingleChat() {
     useEffect(() => {
         if (Createmessages) {
             socket.emit("new message", Createmessages)
+            dispatch(SaveNotificationAction(Createmessages._id, getReciver(user, SelectChat.users), SelectChat._id))
             setMessages([...Messages, Createmessages])
         }
         if (Createmessageserror) {

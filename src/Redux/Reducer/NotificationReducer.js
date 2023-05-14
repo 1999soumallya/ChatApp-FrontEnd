@@ -1,4 +1,4 @@
-import { ADD_NOTIFICATION_FAILED, ADD_NOTIFICATION_SUCCESS, DELETE_NOTIFICATION_FAILED, DELETE_NOTIFICATION_SUCCESS, GET_NOTIFICATION_FAILED, GET_NOTIFICATION_SUCCESS } from "../Constants/NotificationConstants";
+import { ADD_NOTIFICATION_FAILED, ADD_NOTIFICATION_SUCCESS, DELETE_ALL_NOTIFICATION_FAILED, DELETE_ALL_NOTIFICATION_SUCCESS, DELETE_NOTIFICATION_FAILED, DELETE_NOTIFICATION_SUCCESS, GET_NOTIFICATION_FAILED, GET_NOTIFICATION_SUCCESS } from "../Constants/NotificationConstants";
 
 export const GetNotificationReducer = (state = { notifications: [] }, action) => {
     switch (action.type) {
@@ -6,7 +6,7 @@ export const GetNotificationReducer = (state = { notifications: [] }, action) =>
             return { notifications: action.payload };
 
         case GET_NOTIFICATION_FAILED:
-            return { error: action.payload }
+            return { notificationserror: action.payload }
 
         default:
             return state;
@@ -33,6 +33,19 @@ export const DeleteNotificationReducer = (state = {}, action) => {
 
         case DELETE_NOTIFICATION_FAILED:
             return { Deletenotificationserror: action.payload }
+
+        default:
+            return state;
+    }
+}
+
+export const DeleteAllNotificationReducer = (state = {}, action) => {
+    switch (action.type) {
+        case DELETE_ALL_NOTIFICATION_SUCCESS:
+            return { DeleteAllnotifications: action.payload };
+
+        case DELETE_ALL_NOTIFICATION_FAILED:
+            return { DeleteAllnotificationserror: action.payload }
 
         default:
             return state;
